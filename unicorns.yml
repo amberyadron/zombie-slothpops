@@ -1,0 +1,134 @@
+- name: "Create Launch Configuration, ELB, Auto-Scaling group"
+  hosts: localhost
+  tags:
+    - aws
+  vars:
+    - iteration: 003
+    - app: "unicorn-rentals"
+    - region: eu-central-1
+    - port: 80
+    - min_instances: 1
+    - desired_instances: 1
+    - max_instances: 1
+    - instances_type: t2.micro
+    - "lc_name": "lc-{{ iteration }}"
+    - new_lc: "{{ app }}-{{ lc_name }}"
+    - iam_profile: "qls-624324-f1eb1cb368e91a28-PlayerInstanceProfile-OSVQ4KSN2S9P"
+  tasks:
+
+    - name: Get all the Auto Scaling Groups from awscli
+      shell: aws autoscaling describe-auto-scaling-groups --region {{ region }}
+      register: asg_output
+
+    - name: Get all the instances handled by an Auto Scalling Groups from awscli
+      shell: aws autoscaling describe-auto-scaling-instances --region {{ region }}
+      register: asg_instances_output
+
+    - name: Initialize the current Launch Configration and Auto Scaling Group to Null
+      set_fact:
+        current_lc: null # this necessary for the first update when the ASG doesn't exist
+        current_asg: null
+        running_instances: 0
+
+    - name: Find all the matching Auto Scaling Groups
+      set_fact:
+        asg_list: "{{ (asg_output.stdout
+                        | from_json)['AutoScalingGroups']
+                        | selectattr('AutoScalingGroupName', 'equalto', app)
+                        | list }}"
+
+    - name: Find current Auto Scaling Group and Launch Configuration
+      set_fact:
+        current_asg: "{{ (asg_list | first)['AutoScalingGroupName'] }}"
+        current_lc: "{{ (asg_list | first)['LaunchConfigurationName'] }}"
+      when: asg_list | length > 0
+
+    - name: Check if Launch Configuration needs to be updated
+      set_fact:
+        update_lc: "{{ new_lc != current_lc }}"
+
+    - name: Get Running instances in the Current Auto Scaling Group
+      set_fact:
+        running_instances: "{{ (asg_instances_output.stdout
+                                 | from_json)['AutoScalingInstances']
+                                 | selectattr('AutoScalingGroupName', 'equalto', current_asg)
+                                 | list
+                                 | length }}"
+      when: current_asg and update_lc
+
+    - name: Update desired instances if more instances are currently running
+      set_fact:
+        desired_instances: "{{ running_instances }}"
+      when: running_instances > desired_instances and update_lc
+
+    - name: Describe Launch configuration
+      shell: aws autoscaling describe-auto-scaling-groups --region {{ region }}
+      register: asg_output
+
+    - name: Create or Update Elastic Load Balancer
+      ec2_elb_lb:
+        region: "{{ region }}"
+        name: "{{ app }}"
+        state: present
+        connection_draining_timeout: 120
+        scheme: "internet-facing"
+        security_group_ids: "sg-a3eacdcb"
+        subnets:
+          - subnet-f03a8198
+          - subnet-a900ced3
+        listeners:
+          - protocol: http
+            load_balancer_port: 80
+            instance_port: "{{ port }}"
+        health_check:
+          ping_protocol: tcp
+          ping_port: "{{ port }}"
+          response_timeout: 29
+          interval: 30
+          unhealthy_threshold: 2
+          healthy_threshold: 2
+
+    - name: Define user_data
+      set_fact:
+        lc_user_data: |
+          #!/bin/bash
+          yum -y install wget
+          pip install boto3 flask
+          wget http://zombie-slothpops.s3-website.eu-central-1.amazonaws.com/server.py
+          chmod +x server.py
+          python server.py '4eed690923' 'https://dashboard.cash4code.net/score'
+
+    - name: Create Launch Configuration
+      ec2_lc:
+        name: "{{ new_lc }}"
+        region: "{{ region }}"
+        image_id: "ami-53b6713c"
+        key_name: "zombie-slothpops"
+        security_groups: ['sg-a3eacdcb']
+        instance_type: "{{ instances_type }}"
+        instance_profile_name: "{{ iam_profile }}"
+        user_data: "{{ lc_user_data }}"
+      when: update_lc
+
+    - name: Create or Update Auto Scaling Group
+      ec2_asg:
+        name: "{{ app }}"
+        region: "{{ region }}"
+        launch_config_name: "{{ new_lc }}"
+        health_check_period: 600
+        health_check_type: ELB
+        desired_capacity: 1
+        min_size: 1
+        max_size: 1
+        vpc_zone_identifier: ['subnet-f03a8198','subnet-a900ced3']
+        load_balancers: "{{ app }}"
+        replace_all_instances: true
+        wait_for_instances: true
+      when: update_lc
+
+    - name: Delete Old Launch Configuration
+      ec2_lc:
+        name: "{{current_lc}}"
+        state: absent
+        region: "{{ region }}"
+      when: update_lc and current_lc # current_lc is now the old launch config

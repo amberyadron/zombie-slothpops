@@ -7,10 +7,17 @@ Args:
     API Base (https://...)
 
 """
+import os
+# Probably a better way than this but yolo
+os.environ["AWS_DEFAULT_REGION"] = 'eu-central-1'
+
 from flask import Flask, request
 import logging
 import argparse
 import urllib2
+import boto3
+dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table('zombie-slothpops')
 
 # logging.basicConfig(level=logging.DEBUG)
 
@@ -56,13 +63,22 @@ def process_message(msg):
 
     # Try to get the parts of the message from the MESSAGES dictionary.
     # If it's not there, create one that has None in both parts
-    parts = MESSAGES.get(msg_id, [None, None])
+    r = table.get_item(Key = {'Id': msg_id}, ConsistentRead=True)
+    if 'Item' in r.keys():
+        parts = r['Item']['value']
+    else:
+        parts = [None,None]
 
     # store this part of the message in the correct part of the list
     parts[part_number] = data
 
     # store the parts in MESSAGES
-    MESSAGES[msg_id] = parts
+    table.put_item(
+        Item = {
+            'Id':  msg_id,
+            'value': parts
+        }
+    )
 
     # if both parts are filled, the message is complete
     if None not in parts:
@@ -92,6 +108,6 @@ if __name__ == "__main__":
     # This will cause the app to block requests, which means that you miss out on some points,
     # and fail ALB healthchecks, but whatever I know I'm getting fired on Friday.
     #APP.run(host="0.0.0.0", port="80")
-
+    
     # Use this to enable threading:
     APP.run(host="0.0.0.0", port="80", threaded=True)

@@ -24,7 +24,7 @@ ssh_key_name: zombie-slothpops
 
 # The name for the EC2 launch configuration and autoscaling group to be created. For more about this
 # resource, see `server.yml`
-launch_config: ZombieSlothpopsLC001
+launch_config: ZombieSlothpopsLC002
 autoscaling_group: ZombieSlothpops
 
 # the AWS region to use, for the gameday please use eu-central-1

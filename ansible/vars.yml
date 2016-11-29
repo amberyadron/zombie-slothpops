@@ -11,6 +11,8 @@ scoring:
   # The scoring URL should not need to be changed
   url: "https://dashboard.cash4code.net/score"
 
+iam_profile: "arn:aws:iam::176762829186:instance-profile/qls-625183-5d519d24957d585b-PlayerInstanceProfile-LIAXD2YPMNJ1"
+
 # The AWS CLI profile you'll be using for the game
 # Ansible uses these credentials as well, so follow the instructions here:
 # http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-set-up.html

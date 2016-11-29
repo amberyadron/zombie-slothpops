@@ -100,6 +100,7 @@
       - "{{ ssh_sg.group_id }}"
     instance_type: t2.micro
     instance_monitoring: yes
+    instance_profile_name: "{{ iam_profile }}"
     user_data: "{{ lookup('template', 'templates/userdata.txt.j2') }}"
 
 - name: Create auto-scaling group with size 1

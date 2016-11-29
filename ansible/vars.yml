@@ -7,7 +7,7 @@ team_name: zombie-slothpops
 scoring:
   # In your gameday team dashboard, there will be an API token that looks like
   # this. To get points you MUST CHANGE THIS
-  api_token: "FQoDYXdzEDsaDB97LJqSBwznhHAnzSLZAcysKHHhxfPf6flHi2PqnWmW86bqx8FsmetdTdA+4ZFB1D68cO1Kfh9N9OJg8tbY5aIcLVVGrIKCZpj2ENY1akAxVVjeWgISnb4YFM5cMvh2vB/rsOHmETWQuFSt34J9UFnCkc1zY5aYFgGEO+BAED2/Duxx8GAHlwIUei9fYLLxsERKyAepAvljZLZeOJO1vjOBp/yeDZW01Ka87lPQrU779J+yxs4o51L2F6mAOHgralcEouT1YTCw9TJwM7ycGOGbL4LNXj7QsVpgG8t5wp3o1OAFETmAFmUoy7/zwQU="
+  api_token: "4eed690923"
   # The scoring URL should not need to be changed
   url: "https://dashboard.cash4code.net/score"
 

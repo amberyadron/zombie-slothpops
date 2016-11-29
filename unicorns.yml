@@ -7,9 +7,6 @@
     - app: "unicorn-rentals"
     - region: eu-central-1
     - port: 80
-    - min_instances: 1
-    - desired_instances: 1
-    - max_instances: 1
     - instances_type: t2.micro
     - "lc_name": "lc-{{ iteration }}"
     - new_lc: "{{ app }}-{{ lc_name }}"

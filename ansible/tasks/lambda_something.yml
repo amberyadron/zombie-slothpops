@@ -11,7 +11,7 @@
     zip_file: unicorn.zip
     runtime: python2.7
     timeout: 20
-    handler: unicorn.handler
+    handler: unicorn.handle
     memory_size: 1024
     role: "{{ iam_exec_role }}"
   register: lambda_results

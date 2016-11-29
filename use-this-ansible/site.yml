@@ -4,4 +4,10 @@
   gather_facts: false
   tasks:
   - include_vars: vars.yml
+  - include: tasks/networks.yml
+  - include: tasks/s3.yml
+  - include: tasks/sqs.yml
+  - include: tasks/kinesis.yml
+  - include: tasks/lambda_something.yml
+  - include: tasks/dynamodb.yml
   - include: tasks/server.yml

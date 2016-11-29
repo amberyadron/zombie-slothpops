@@ -8,6 +8,8 @@
   - include: tasks/s3.yml
   - include: tasks/sqs.yml
   - include: tasks/kinesis.yml
-  - include: tasks/lambda_something.yml
+  - include: tasks/lambda_s3.yml
+  - include: tasks/lambda_kinesis.yml
+  - include: tasks/lambda_sqs.yml
   - include: tasks/dynamodb.yml
   - include: tasks/server.yml

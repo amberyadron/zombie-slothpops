@@ -12,6 +12,9 @@ scoring:
   url: "https://dashboard.cash4code.net/score"
 
 iam_profile: "arn:aws:iam::176762829186:instance-profile/qls-625183-5d519d24957d585b-PlayerInstanceProfile-LIAXD2YPMNJ1"
+iam_exec_arn: "arn:aws:iam::176762829186:role/qls-625183-5d519d24957d585b-PlayerRole-UGLLLXR8DY6J"
+
+s3_deployment_package: unicorn
 
 # The AWS CLI profile you'll be using for the game
 # Ansible uses these credentials as well, so follow the instructions here:

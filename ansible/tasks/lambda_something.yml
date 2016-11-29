@@ -1,6 +1,6 @@
 ---
 - set_fact:
-    iam_exec_role: "{{ iam_exec_arn }}"
+    iam_exec_role: "arn:aws:iam::619002270578:role/qls-624324-f1eb1cb368e91a28-PlayerRole-CTR01Q2OY5A"
     function_name: "zombie-slothpops"
 
 - name: AWS Lambda Function
@@ -8,8 +8,8 @@
     region: eu-central-1
     name: "{{ function_name }}"
     description: lambda function to take unicorn rental messages and send them to the scoring API
-    zip_file: unicorn.zip
-    runtime: ../python2.7
+    zip_file: ../unicorn.zip
+    runtime: python2.7
     timeout: 20
     handler: unicorn.handler
     memory_size: 1024

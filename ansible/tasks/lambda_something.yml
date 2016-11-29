@@ -9,7 +9,7 @@
     name: "{{ function_name }}"
     description: lambda function to take unicorn rental messages and send them to the scoring API
     zip_file: unicorn.zip
-    runtime: python2.7
+    runtime: ../python2.7
     timeout: 20
     handler: unicorn.handler
     memory_size: 1024

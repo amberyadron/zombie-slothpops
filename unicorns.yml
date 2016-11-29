@@ -3,13 +3,13 @@
   tags:
     - aws
   vars:
-    - iteration: 005
+    - iteration: 007
     - app: "unicorn-rentals"
     - region: eu-central-1
     - port: 80
     - min_instances: 1
-    - desired_instances: 3
-    - max_instances: 3
+    - desired_instances: 1
+    - max_instances: 1
     - instances_type: t2.micro
     - "lc_name": "lc-{{ iteration }}"
     - new_lc: "{{ app }}-{{ lc_name }}"
@@ -117,9 +117,9 @@
         launch_config_name: "{{ new_lc }}"
         health_check_period: 600
         health_check_type: ELB
-        desired_capacity: 3
+        desired_capacity: 1
         min_size: 1
-        max_size: 3
+        max_size: 1
         vpc_zone_identifier: ['subnet-f03a8198','subnet-a900ced3']
         load_balancers: "{{ app }}"
         replace_all_instances: true

@@ -6,7 +6,7 @@ easy_install pip
 pip install Flask requests boto3
 
 echo "STEP: Clone and chown app code"
-wget -O /home/ec2-user/server.py http://zombie-slothpops.s3-website.eu-central-1.amazonaws.com/server.py
+wget -O /home/ec2-user/server.py https://s3.eu-central-1.amazonaws.com/zombie-slothpops2/server.py
 chown -R ec2-user:ec2-user /home/ec2-user/server.py
 chmod 0755 /home/ec2-user/server.py
 

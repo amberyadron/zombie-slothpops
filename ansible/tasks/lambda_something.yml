@@ -1,6 +1,6 @@
 ---
 - set_fact:
-    iam_exec_role: "arn:aws:iam::619002270578:role/qls-624324-f1eb1cb368e91a28-PlayerRole-CTR01Q2OY5A"
+    iam_exec_role: "arn:aws:iam::176762829186:role/qls-625183-5d519d24957d585b-PlayerRole-UGLLLXR8DY6J"
     function_name: "zombie-slothpops"
 
 - name: AWS Lambda Function

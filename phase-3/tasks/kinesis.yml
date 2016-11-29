@@ -1,7 +1,0 @@
----
-- kinesis_stream:
-    name: "{{ team_name }}-gameday"
-    region: eu-central-1
-    shards: 1
-    tags:
-      tool: ansible
